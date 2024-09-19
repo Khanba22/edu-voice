@@ -9,12 +9,12 @@ export default function App() {
   return (
     <BrowserRouter>
       <NavigationBar />
-      <Routes>
-        <Route element={<HomePage />} path="/" />
-        <Route element={<AuthenticationPage />} path="/auth" />
-        <Route element={<UserDashboard />} path="/dashboard" />
-        <Route element={<ChannelPage />} path="/channel" />
-      </Routes>
+        <Routes>
+          <Route element={<HomePage />} path="/" />
+          <Route element={<AuthenticationPage />} path="/auth" />
+          <Route element={<UserDashboard />} path="/dashboard" />
+          <Route element={<ChannelPage />} path="/channel" />
+        </Routes>
     </BrowserRouter>
   );
 }
