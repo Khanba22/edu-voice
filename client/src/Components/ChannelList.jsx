@@ -1,7 +1,5 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import { UserContext } from "../Contexts/UserContext";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../Contexts/AuthContext";
+import React, { useState } from "react";
+
 
 const ChannelList = ({ channels, selectChannel }) => {
   const [expand, setExpand] = useState(true);
@@ -16,7 +14,7 @@ const ChannelList = ({ channels, selectChannel }) => {
         <div className="overflow-y-scroll h-full bg-neutral-800 py-2  w-full channelList">
           {channels.map((channel, index) => (
             <div
-              key={channel}
+              key={index}
               onClick={() => {
                 selectChannel(index);
                 setSelected(index);

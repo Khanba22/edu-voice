@@ -19,18 +19,20 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
-
-const rooms = {};
-const peerMaps = {};
-
 app.use("/user",require("./Routes/UserRoute"))
 app.use("/channel",require("./Routes/ChannelRoutes"))
 
 // Remove Later For testing only
 app.use("",require("./Routes/TempRoutes"))
 
+
+
+// Real Time Data Handling
+
+const channelMap = {}
+
 io.on("connection", (socket) => {
-  roomHandler(socket, rooms, peerMaps);
+  roomHandler(socket, channelMap);
   console.log("Socket Connected");
   socket.on("disconnect", () => {});
 });

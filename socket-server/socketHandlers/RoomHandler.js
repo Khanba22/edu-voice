@@ -1,26 +1,33 @@
 const { v4 } = require("uuid");
 
-const roomHandler = (socket, rooms, peerMaps) => {
-  const joinRoom = ({ roomId, peerId, username }) => {};
-  const createRoom = () => {
-    const roomId = v4().split("-")[0];
-    rooms[roomId] = {
-      members: {},
-      chats: [],
-      peerIds: {},
-    };
-    socket.join(roomId);
-    socket.emit("room-created", { roomId });
+const roomHandler = (socket, channelMap) => {
+  const joinAudioGroup = ({ channelId, username, peerId }) => {
+    console.log(channelId, username, peerId);
+    const channel = channelMap[channelId];
+    if (!channel) {
+      channelMap[channelId] = {
+        channelId,
+        members: [username],
+        socketIdMaps: {
+          [socket.id]: { username, peerId },
+        },
+      };
+    } else {
+      channel.members.push(username);
+      channel.socketIdMaps[socket.id] = { username, peerId };
+    }
+    socket.join(channelId);
+    socket.to(channelId).emit("user-joined", { peerId , username });
+    socket.emit("user-joined",{ peerId , username });
   };
 
-  const getUsers = ({ roomId }) => {};
+  const leaveAudioGroup = ({ channelId }) => {
+    const channel = channelMap[channelId];
+  };
 
-  const disconnectUser = ({ roomId, username, peerId }) => {};
-
-  socket.on("get-users", getUsers);
-  socket.on("join-room", joinRoom);
-  socket.on("create-room", createRoom);
-  socket.on("disconnect", disconnectUser);
+  socket.on("join-audio", joinAudioGroup);
+  socket.on("leave-audio", leaveAudioGroup);
+  socket.on("disconnect", leaveAudioGroup);
 };
 
 module.exports = { roomHandler };
