@@ -1,42 +1,64 @@
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useEffect, useMemo, useRef, useState } from "react";
 import socketIo from "socket.io-client";
 import Peer from "peerjs";
 import { useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
+import { addPeers, removePeer } from "../Redux/PeerSlice";
 
 export const SocketContext = createContext(null);
 const socketUrl = process.env.SocketUrl || "http://localhost:4000";
 
 export const SocketProvider = ({ children }) => {
-  const peers = useRef(null);
+  const dispatch = useDispatch();
+  const ws = socketIo(socketUrl);
   const myPeer = useRef(null);
+  const myPeerId = useRef(null);
   const myStream = useRef(null);
 
-  useEffect(() => {
-    if (window.location.pathname.includes("/room")) {
-      const meId = uuidv4();
-      setMyPeerId(meId);
-      const peer = new Peer(meId);
-      myPeer.current = peer;
-      if (!peer) {
-        alert("Peer Connection Failed");
-        return;
-      }
-      try {
-        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-          myStream.current = stream;
-          // dispatched(addPeerAction(meId, stream));
+  const receiveMessage = ({ sender, message, timeStamp }) => {};
+
+  useMemo(() => {
+    const peerId = uuidv4();
+    myPeerId.current = peerId;
+    const peer = new Peer(peerId);
+    myPeer.current = peer;
+    console.log(myPeer.current);
+  }, []);
+
+  const joinAudio = async () => {
+    try {
+      await navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then((media) => {
+          myStream.current = media;
         });
-      } catch (error) {
-        console.error(error);
-      }
+    } catch (err) {
+      console.log("", err);
     }
+  };
+
+  useEffect(() => {
+    ws.on("receive-message", receiveMessage);
+    myPeer.current.on("call", (call) => {
+      const caller = call.metadata.username;
+      call.answer(myStream.current);
+      call.on("stream", (peerStream) => {
+        dispatch({
+          type: `${addPeers}`,
+          payload: {
+            peerId: call.peer,
+            peerStream,
+          },
+        });
+      });
+    });
+    return () => {
+      ws.off("receive-message", receiveMessage);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [window.location.pathname]);
+  }, [myPeer.current]);
 
   return (
-    <SocketContext.Provider value={{ ws, peers, chats }}>
-      {children}
-    </SocketContext.Provider>
+    <SocketContext.Provider value={{ ws }}>{children}</SocketContext.Provider>
   );
 };

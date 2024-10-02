@@ -1,16 +1,17 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { UserContext } from "../Contexts/UserContext";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../Contexts/AuthContext";
 
 const ChannelList = () => {
   // Temporary Array Of Channel Data
   const navigate = useNavigate()
   const { userDetails } = useContext(UserContext);
+  const {isAuthenticated} = useContext(AuthContext);
   const [channels, setChannels] = useState([]);
 
   const getChannels = async () => {
     if (!userDetails) {
-      navigate("/auth")
       return;
     }
     await fetch("http://localhost:4000/user/get-channels", {
@@ -33,7 +34,7 @@ const ChannelList = () => {
 
   useEffect(() => {
     getChannels();
-  }, []);
+  }, [isAuthenticated]);
 
   const [expand, setExpand] = useState(true);
 

@@ -7,13 +7,16 @@ import { Provider } from "react-redux";
 import Store from "./Redux/Store";
 import { UserContextProvider } from "./Contexts/UserContext";
 import { BrowserRouter } from "react-router-dom";
+import { AuthContextProvider } from "./Contexts/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Provider store={Store}>
       <UserContextProvider>
-        <App />
+        <AuthContextProvider>
+          <App />
+        </AuthContextProvider>
       </UserContextProvider>
     </Provider>
   </BrowserRouter>

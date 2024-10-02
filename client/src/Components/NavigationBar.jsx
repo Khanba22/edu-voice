@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const NavigationBar = () => {
   const [show, setShow] = useState(true);
-  const [hideExtra, setHideExtra] = useState(false);
+  const [hideExtra, setHideExtra] = useState(true);
   const { logout } = useContext(UserContext);
   const navigate = useNavigate();
   return (
@@ -28,8 +28,8 @@ const NavigationBar = () => {
         </div>
         <div
           className={`absolute right-0 bottom-0 transition ${
-            hideExtra ? "-" : ""
-          }translate-y-full h-44 w-36 bg-yellow-700`}
+            hideExtra ? "-translate-y-60" : "translate-y-44"
+          } h-44 w-36 bg-yellow-700`}
         >
           <button
             onClick={() => {

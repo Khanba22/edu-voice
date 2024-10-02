@@ -4,18 +4,10 @@ import AuthenticationPage from "./Pages/AuthenticationPage";
 import UserDashboard from "./Pages/UserDashboard";
 import ChannelPage from "./Pages/ChannelPage";
 import NavigationBar from "./Components/NavigationBar";
-import { useContext, useEffect } from "react";
-import { UserContext } from "./Contexts/UserContext";
 import CreateUser from "./Components/CreateUser";
 
 export default function App() {
-  const userContext = useContext(UserContext);
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!userContext.isAuthenticated) {
-      navigate("/auth");
-    }
-  }, []);
+
   return (
     <>
       <NavigationBar />
