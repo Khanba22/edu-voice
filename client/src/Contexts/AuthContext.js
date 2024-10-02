@@ -59,6 +59,10 @@ export const AuthContextProvider = ({ children }) => {
             navigate("/auth/create-user");
           } else {
             // Save The Login User
+            console.log(window.location.pathname)
+            if (window.location.pathname === "/auth") {
+                navigate("/channel")
+            }
             setIsAuthenticated(true);
             setUserDetails(data.user);
           }

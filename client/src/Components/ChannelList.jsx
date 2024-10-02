@@ -3,62 +3,46 @@ import { UserContext } from "../Contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Contexts/AuthContext";
 
-const ChannelList = () => {
-  // Temporary Array Of Channel Data
-  const navigate = useNavigate()
-  const { userDetails } = useContext(UserContext);
-  const {isAuthenticated} = useContext(AuthContext);
-  const [channels, setChannels] = useState([]);
-
-  const getChannels = async () => {
-    if (!userDetails) {
-      return;
-    }
-    await fetch("http://localhost:4000/user/get-channels", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId: userDetails._id }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setChannels(data.channels);
-      });
-  };
-
- 
-
-  useEffect(() => {
-    getChannels();
-  }, [isAuthenticated]);
-
+const ChannelList = ({ channels, selectChannel }) => {
   const [expand, setExpand] = useState(true);
+  const [selectedIndex, setSelected] = useState(0);
 
   return (
-    <div className="w-12 h-full">
+    <div className="w-12 h-full z-50">
       <div
         className={`relative transition w-80 h-full ${expand ? "" : "w-80"}`}
         style={expand ? { transform: "translateX(-17rem)" } : {}}
       >
-        <div className="overflow-y-scroll h-full bg-green-600  w-full channelList">
-          {channels.map((channel) => (
-            <div className="h-12 my-2 w-full px-1 py-2 flex justify-end items-center">
-              <div className="bg-purple-700 flex aspect-square justify-center items-center h-10 rounded-full">
+        <div className="overflow-y-scroll h-full bg-neutral-800 py-2  w-full channelList">
+          {channels.map((channel, index) => (
+            <div
+              key={channel}
+              onClick={() => {
+                selectChannel(index);
+                setSelected(index);
+              }}
+              className={`${
+                selectedIndex === index ? "bg-zinc-800" : "bg-zinc-900"
+              } h-16 w-full px-1 flex justify-end items-center`}
+            >
+              <div
+                className={`${
+                  selectedIndex === index ? "bg-slate-200" : "bg-slate-200"
+                } flex aspect-square justify-center items-center h-10 rounded-full`}
+              >
                 {channel.channelName[0]}
                 {/* Logo */}
               </div>
               <div
-                className={`${expand && "hidden"} mx-3 w-full bg-slate-300 p-2`}
+                className={`${
+                  expand && "hidden"
+                } h-full mx-3 w-full ${selectedIndex === index ? "bg-zinc-800" : "bg-zinc-900"} text-white p-1`}
               >
-                <div className="flex  w-full justify-between">
-                  <p>{channel.channelName}</p>
+                <div className="flex w-full justify-between">
+                  <p className="text-m p-0 m-0">{channel.channelName}</p>
                   <span>12-12AM</span>
                 </div>
-                <p>Last Chat said blah blah blah</p>
+                <p className=" text-s ">Last Chat said blah blah blah</p>
               </div>
             </div>
           ))}

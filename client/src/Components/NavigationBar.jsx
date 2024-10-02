@@ -1,11 +1,12 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "../Contexts/UserContext";
 import { Link, useNavigate } from "react-router-dom";
+import {AuthContext} from "../Contexts/AuthContext"
 
 const NavigationBar = () => {
   const [show, setShow] = useState(true);
   const [hideExtra, setHideExtra] = useState(true);
-  const { logout } = useContext(UserContext);
+  const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
   return (
     <div className="w-screen overflow-x-clip flex items-center bg-black fixed z-50 top-0 h-16 text-white">

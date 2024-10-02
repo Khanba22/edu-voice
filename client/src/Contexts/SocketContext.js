@@ -59,6 +59,6 @@ export const SocketProvider = ({ children }) => {
   }, [myPeer.current]);
 
   return (
-    <SocketContext.Provider value={{ ws }}>{children}</SocketContext.Provider>
+    <SocketContext.Provider value={{ ws , joinAudio , myPeer }}>{children}</SocketContext.Provider>
   );
 };

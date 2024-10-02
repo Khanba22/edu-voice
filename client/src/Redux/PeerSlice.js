@@ -2,7 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const peerSlice = createSlice({
   name: "peerSlice",
-  initialState: {},
+  initialState: {
+    
+  },
   reducers: {
     addPeers: (state, action) => {
       return {
