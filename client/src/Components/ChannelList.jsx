@@ -1,55 +1,60 @@
-import React, { useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { UserContext } from "../Contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const ChannelList = () => {
   // Temporary Array Of Channel Data
-  const channels = [
-    "L",
-    "A",
-    "V",
-    "A",
-    "N",
-    "Y",
-    "A",
-    "G",
-    "A",
-    "W",
-    "A",
-    "R",
-    "L",
-    "A",
-    "V",
-    "A",
-    "N",
-    "Y",
-    "A",
-    "G",
-    "A",
-    "W",
-    "A",
-    "R",
-  ];
+  const navigate = useNavigate()
+  const { userDetails } = useContext(UserContext);
+  const [channels, setChannels] = useState([]);
+
+  const getChannels = async () => {
+    if (!userDetails) {
+      navigate("/auth")
+      return;
+    }
+    await fetch("http://localhost:4000/user/get-channels", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: userDetails._id }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setChannels(data.channels);
+      });
+  };
+
+ 
+
+  useEffect(() => {
+    getChannels();
+  }, []);
+
   const [expand, setExpand] = useState(true);
 
   return (
     <div className="w-12 h-full">
       <div
-        className={`relative transition w-80 h-full ${
-          expand ? "" : "w-80"
-        }`}
-        style={expand?{transform:"translateX(-17rem)"}:{}}
+        className={`relative transition w-80 h-full ${expand ? "" : "w-80"}`}
+        style={expand ? { transform: "translateX(-17rem)" } : {}}
       >
         <div className="overflow-y-scroll h-full bg-green-600  w-full channelList">
           {channels.map((channel) => (
             <div className="h-12 my-2 w-full px-1 py-2 flex justify-end items-center">
               <div className="bg-purple-700 flex aspect-square justify-center items-center h-10 rounded-full">
-                {channel}
+                {channel.channelName[0]}
                 {/* Logo */}
               </div>
               <div
                 className={`${expand && "hidden"} mx-3 w-full bg-slate-300 p-2`}
               >
                 <div className="flex  w-full justify-between">
-                  <p>Channel Name</p>
+                  <p>{channel.channelName}</p>
                   <span>12-12AM</span>
                 </div>
                 <p>Last Chat said blah blah blah</p>

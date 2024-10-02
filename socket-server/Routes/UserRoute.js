@@ -5,11 +5,10 @@ const Channel = require("../Models/ChannelSchema");
 const Note = require("../Models/NotesSchema");
 
 // Get user details
-router.get("/get-user", async (req, res) => {
+router.post("/get-user", async (req, res) => {
   try {
-    const { userId } = req.body;
-    const user = await User.findById(userId).populate("channels");
-
+    const { email } = req.body;
+    const user = await User.findOne({ email: email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -21,7 +20,7 @@ router.get("/get-user", async (req, res) => {
 });
 
 // Get all channels for a user
-router.get("/get-channels", async (req, res) => {
+router.post("/get-channels", async (req, res) => {
   try {
     const { userId } = req.body;
     const user = await User.findById(userId).populate("channels");
@@ -29,7 +28,6 @@ router.get("/get-channels", async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
     res.status(200).json({ channels: user.channels });
   } catch (error) {
     res.status(500).json({ message: "Error retrieving channels", error });

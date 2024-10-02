@@ -8,7 +8,7 @@ const ChannelSideBar = () => {
         ONLINE USERS
       </div>
       <div className={`transition w-96 h-5/6 absolute top-0 left-full ${extend && "-translate-x-full"} bg-green-500`}>
-        CHat Space
+        Settings
       </div>
       <button
         onClick={() => {

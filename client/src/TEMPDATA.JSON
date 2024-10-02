@@ -1,7 +1,12 @@
 {
-    "USER":{
-        "userId":"",
-        "peerId":"",
-        "properties":""
-    }
+  "script": "Welcome! Today, we’re diving into the different types of networks, exploring what they are and how they function in the real world. Let’s start with Local Area Networks, or LANs. A LAN connects devices within a limited area, like a home, school, or office. Imagine a small coffee shop—everything from the computers to the Wi-Fi for customers connects to a single router. This allows employees to share files and access the internet seamlessly. Next up is the Wide Area Network, or WAN. WANs cover much larger geographic areas and connect multiple LANs together. For instance, consider a corporation with offices in different cities. Each office has its own LAN, but they connect to a central network through a VPN. This lets employees communicate and share data across locations. Now, let’s discuss Metropolitan Area Networks, or MANs. These networks span a city or a large campus. A great example is a university campus. It might have a MAN connecting all its buildings—like libraries, dorms, and classrooms—allowing students and faculty to access shared resources quickly. Another type is the Personal Area Network, or PAN. PANs connect personal devices over short distances, usually within a few meters. Think about using your smartphone to connect to Bluetooth headphones. That’s a PAN! It’s great for syncing personal devices, like a smartwatch with your phone. We can’t forget about Wireless Networks. Wireless networks, such as Wi-Fi, enable devices to connect without physical cables. They can function as LANs, WANs, or even MANs. A familiar example would be your home Wi-Fi network—it’s a LAN, but it’s wireless, allowing you to connect your laptop, smartphone, and smart TV without any cords. Finally, there’s the Internet, which is essentially the largest WAN in existence. It connects millions of networks worldwide, serving as a network of networks. To recap, we’ve covered LANs, WANs, MANs, PANs, wireless networks, and the Internet. Each type serves a unique purpose tailored to the specific needs of its users. Thanks for tuning in, and I hope this gives you a clearer understanding of the fascinating world of networks!",
+  "summary": [
+    "Local Area Network (LAN): Connects devices within a limited area (e.g., home, school, office). Example: A coffee shop with computers and customer Wi-Fi connected to a single router.",
+    "Wide Area Network (WAN): Covers larger geographic areas, connecting multiple LANs. Example: A corporation with offices in different cities connected via a central network.",
+    "Metropolitan Area Network (MAN): Spans a city or large campus. Example: A university campus connecting buildings like libraries, dorms, and classrooms.",
+    "Personal Area Network (PAN): Connects personal devices over short distances (usually a few meters). Example: A smartphone connecting to Bluetooth headphones.",
+    "Wireless Networks: Enable devices to connect without physical cables (can be LANs, WANs, or MANs). Example: Home Wi-Fi network connecting multiple devices wirelessly.",
+    "The Internet: The largest WAN, connecting millions of networks worldwide. Acts as a network of networks.",
+    "Recap: Covered LANs, WANs, MANs, PANs, wireless networks, and the Internet. Each type serves a unique purpose tailored to specific user needs."
+  ]
 }

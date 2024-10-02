@@ -26,6 +26,9 @@ const peerMaps = {};
 app.use("/user",require("./Routes/UserRoute"))
 app.use("/channel",require("./Routes/ChannelRoutes"))
 
+// Remove Later For testing only
+app.use("",require("./Routes/TempRoutes"))
+
 io.on("connection", (socket) => {
   roomHandler(socket, rooms, peerMaps);
   console.log("Socket Connected");

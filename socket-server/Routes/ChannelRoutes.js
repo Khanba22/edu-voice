@@ -74,32 +74,31 @@ router.get("/get-members", async (req, res) => {
 
 // Get all chats in a channel
 router.get("/get-chats", async (req, res) => {
-    try {
-      const { channelId } = req.query;
-  
-      // Find the channel by ID and populate the sender field
-      const channel = await Channel.findById(channelId).populate({
-        path: 'chats.sender',
-        select: 'username'
-      });
-  
-      if (!channel) {
-        return res.status(404).json({ message: "Channel not found" });
-      }
-  
-      // Map over the chats to replace sender ID with username
-      const chatsWithUsernames = channel.chats.map(chat => ({
-        text: chat.text,
-        sender: chat.sender ? chat.sender.username : "Unknown", // Replace sender ID with username
-        timestamp: chat.timestamp
-      }));
-  
-      res.status(200).json({ chats: chatsWithUsernames });
-    } catch (error) {
-      res.status(500).json({ message: "Error retrieving chats", error });
+  try {
+    const { channelId } = req.query;
+
+    // Find the channel by ID and populate the sender field
+    const channel = await Channel.findById(channelId).populate({
+      path: "chats.sender",
+      select: "username",
+    });
+
+    if (!channel) {
+      return res.status(404).json({ message: "Channel not found" });
     }
-  });
-  
+
+    // Map over the chats to replace sender ID with username
+    const chatsWithUsernames = channel.chats.map((chat) => ({
+      text: chat.text,
+      sender: chat.sender ? chat.sender.username : "Unknown", // Replace sender ID with username
+      timestamp: chat.timestamp,
+    }));
+
+    res.status(200).json({ chats: chatsWithUsernames });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving chats", error });
+  }
+});
 
 // Search chats in a channel
 router.get("/search-chats", async (req, res) => {
@@ -188,33 +187,35 @@ router.post("/remove-member", isAdmin, async (req, res) => {
 
 // Add a chat message to a channel
 router.post("/add-message", async (req, res) => {
-    try {
-      const { channelId, text, senderId } = req.body;
-      const channel = await Channel.findById(channelId);
-  
-      if (!channel) {
-        return res.status(404).json({ message: "Channel not found" });
-      }
-  
-      const message = {
-        text,
-        sender: senderId, // Add sender ID
-        timestamp: new Date()
-      };
-  
-      channel.chats.push(message);
-      await channel.save();
-  
-      res.status(200).json({ message: "Message added" });
-    } catch (error) {
-      res.status(500).json({ message: "Error adding message", error });
+  try {
+    const { channelId, text, senderId } = req.body;
+    const channel = await Channel.findById(channelId);
+
+    if (!channel) {
+      return res.status(404).json({ message: "Channel not found" });
     }
-  });
+
+    const message = {
+      text,
+      sender: senderId, // Add sender ID
+      timestamp: new Date(),
+    };
+
+    channel.chats.push(message);
+    await channel.save();
+
+    res.status(200).json({ message: "Message added" });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding message", error });
+  }
+});
 
 // Create a new channel
 router.post("/create-channel", async (req, res) => {
   try {
     const { userId, channelName } = req.body;
+
+    const newMember = await User.findById(userId);
 
     const newChannel = new Channel({
       channelName,
@@ -225,6 +226,9 @@ router.post("/create-channel", async (req, res) => {
     });
 
     await newChannel.save();
+    console.log(newChannel);
+    newMember.channels.push(newChannel._id);
+    await newMember.save();
     res.status(201).json({ message: "Channel created", channel: newChannel });
   } catch (error) {
     res.status(500).json({ message: "Error creating channel", error });
