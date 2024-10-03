@@ -10,7 +10,7 @@ const peerSlice = createSlice({
       console.log(action.payload,"Peers Added")
       return {
         ...state,
-        [action.payload.peerId]: action.payload,
+        [action.payload.peerId]: {...action.payload},
       };
     },
     removePeer: (state, action) => {

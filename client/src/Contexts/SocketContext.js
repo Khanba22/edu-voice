@@ -27,8 +27,14 @@ export const SocketProvider = ({ children }) => {
   const [joinedAudio, setJoinedAudio] = useState(false);
 
   const receiveMessage = ({ sender, message, timeStamp }) => {};
-  const { channels, setSelectedChannel, selectedChannel, setChannels } =
-    useContext(ChannelContext);
+  const {
+    channels,
+    setSelectedChannel,
+    selectedChannel,
+    setChannels,
+    addPeer,
+    removePeer
+  } = useContext(ChannelContext);
   const { userDetails } = useContext(UserContext);
 
   useMemo(() => {
@@ -46,7 +52,6 @@ export const SocketProvider = ({ children }) => {
         .then((media) => {
           myStream.current = media;
         });
-      // Add Joining Logic
       ws.emit("join-audio", {
         channelId: selectedChannel._id,
         username: userDetails.username,
@@ -57,22 +62,31 @@ export const SocketProvider = ({ children }) => {
     }
   };
 
-  const handleUserJoin = ({ peerId , username }) => {
+  useEffect(() => {
+    ws.on("user-joined", ({ peerId, username }) => {
+      handleUserJoin({ peerId, username });
+    });
+    return () => {
+      ws.off("user-joined", handleUserJoin);
+    };
+  }, [ws]);
+
+  const handleUserJoin = ({ peerId, username }) => {
+    if (!myPeer.current) {
+      alert("Peer Not Available");
+      return;
+    }
+    alert("Hello");
+    console.log("Handle User Called");
     console.log(peerId, username);
-    const call = myPeer.current.call(peerId, myStream, {
+    const call = myPeer.current.call(peerId, myStream.current, {
       metadata: {
         username: userDetails.username,
       },
     });
     call.on("stream", (peerStream) => {
-      dispatch({
-        type: `${addPeers}`,
-        payload: {
-          username:username,
-          peerId: peerId,
-          stream: peerStream,
-        },
-      });
+      console.log("Call from", peerStream);
+      addPeer({ peerId, peerStream, username })
     });
   };
 
@@ -89,31 +103,31 @@ export const SocketProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    ws.on("receive-message", receiveMessage);
-    ws.on("user-joined", handleUserJoin);
     myPeer.current.on("call", (call) => {
+      const peerId = call.peer
+      const username = call.metadata.username;
       call.answer(myStream.current);
       call.on("stream", (peerStream) => {
-        dispatch({
-          type: `${addPeers}`,
-          payload: {
-            peerId: call.peer,
-            peerStream,
-          },
-        });
+        addPeer({ peerId, peerStream, username })
       });
     });
     return () => {
       ws.off("receive-message", receiveMessage);
-      ws.off("user-joined", handleUserJoin);
-      leaveAudio();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myPeer.current]);
 
   return (
     <SocketContext.Provider
-      value={{ ws, joinAudio, leaveAudio, myPeer, joinedAudio }}
+      value={{
+        ws,
+        joinAudio,
+        leaveAudio,
+        myPeer,
+        joinedAudio,
+        handleUserJoin,
+        receiveMessage,
+      }}
     >
       {children}
     </SocketContext.Provider>

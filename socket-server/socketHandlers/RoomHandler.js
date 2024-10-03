@@ -16,9 +16,10 @@ const roomHandler = (socket, channelMap) => {
       channel.members.push(username);
       channel.socketIdMaps[socket.id] = { username, peerId };
     }
+    console.log(`Joining ${channelId}`);
     socket.join(channelId);
-    socket.to(channelId).emit("user-joined", { peerId , username });
-    socket.emit("user-joined",{ peerId , username });
+    socket.to(channelId).emit("user-joined", { peerId, username });
+    socket.emit("user-joined", { peerId, username });
   };
 
   const leaveAudioGroup = ({ channelId }) => {

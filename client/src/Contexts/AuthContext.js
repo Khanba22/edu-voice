@@ -58,8 +58,6 @@ export const AuthContextProvider = ({ children }) => {
           if (data === null) {
             navigate("/auth/create-user");
           } else {
-            // Save The Login User
-            console.log(window.location.pathname)
             if (window.location.pathname === "/auth") {
                 navigate("/channel")
             }

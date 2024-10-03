@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import ChannelList from "../Components/ChannelList";
 import MainScreen from "../Components/MainScreen";
 import ChannelHeader from "../Components/ChannelHeader";
 import ChannelChats from "../Components/ChannelChats";
 import ChannelSideBar from "../Components/ChannelSideBar";
-import { SocketProvider } from "../Contexts/SocketContext";
+import { SocketContext, SocketProvider } from "../Contexts/SocketContext";
 import { AuthContext } from "../Contexts/AuthContext";
 import { UserContext } from "../Contexts/UserContext";
 import { ChannelContext } from "../Contexts/ChannelContext";
@@ -14,6 +14,7 @@ const ChannelPage = () => {
   const { isAuthenticated } = useContext(AuthContext);
   const { channels, setSelectedChannel, selectedChannel, setChannels } =
     useContext(ChannelContext);
+  const { ws, handleUserJoin, receiveMessage } = useContext(SocketContext);
 
   const selectChannel = (index) => {
     setSelectedChannel(channels[index]);
@@ -34,7 +35,6 @@ const ChannelPage = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
         setChannels(data.channels);
       });
   };
@@ -47,13 +47,10 @@ const ChannelPage = () => {
       <div className="bg-yellow-300 pt-16 h-full overflow-x-hidden">
         <ChannelHeader />
         <div className="flex h-full relative w-full pt-12">
-          {/* Channel List */}
           <ChannelList channels={channels} selectChannel={selectChannel} />
-          {/* Main Screen */}
           <ChannelChats selectedChannel={selectedChannel} />
           <MainScreen selectedChannel={selectedChannel} />
           <ChannelSideBar selectedChannel={selectedChannel} />
-          {/* Voice Controls */}
         </div>
       </div>
     </SocketProvider>
