@@ -2,17 +2,18 @@ import React, { useContext, useState } from "react";
 import { useSelector } from "react-redux";
 import { SocketContext } from "../Contexts/SocketContext";
 import { ChannelContext } from "../Contexts/ChannelContext";
+import AudioControls from "./AudioControls";
 
 const ChannelSideBar = () => {
   const [extend, setExtend] = useState(false);
-  const { peers } = useContext(ChannelContext);
+  const { peers } = useContext(SocketContext);
   const peerArray = Object.keys(peers);
   return (
     <div className="h-full relative w-1/12 bg-slate-800">
       <div className="h-5/6 bg-purple-700">
         {peerArray.map((peer) => (
           <>
-            <div key={peer}>{peer}</div>
+            <AudioControls key={peer} peer = {peers[peer]} peerId = {peer}/>
           </>
         ))}
       </div>

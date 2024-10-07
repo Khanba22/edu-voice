@@ -3,6 +3,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useReducer,
   useRef,
   useState,
 } from "react";
@@ -10,122 +11,121 @@ import socketIo from "socket.io-client";
 import Peer from "peerjs";
 import { useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { addPeers, clearPeers, removePeer } from "../Redux/PeerSlice";
-import { useLocation } from "react-router-dom";
+import { clearPeers } from "../Redux/PeerSlice";
 import { UserContext } from "./UserContext";
 import { ChannelContext } from "./ChannelContext";
+import {
+  addPeerAction,
+  clearPeersAction,
+  removePeerAction,
+} from "./peerActions";
+import { peerReducer } from "./peerReducer";
 
 export const SocketContext = createContext(null);
 const socketUrl = process.env.SocketUrl || "http://localhost:4000";
 
 export const SocketProvider = ({ children }) => {
-  const dispatch = useDispatch();
-  const ws = socketIo(socketUrl);
-  const myPeer = useRef(null);
+  const ws = useMemo(() => socketIo(socketUrl), []);
+  const [me, setMe] = useState(null);
+  const [stream, setStream] = useState(null);
   const myPeerId = useRef(null);
-  const myStream = useRef(null);
   const [joinedAudio, setJoinedAudio] = useState(false);
+  const [peers, dispatched] = useReducer(peerReducer, {});
 
   const receiveMessage = ({ sender, message, timeStamp }) => {};
-  const {
-    channels,
-    setSelectedChannel,
-    selectedChannel,
-    setChannels,
-    addPeer,
-    removePeer
-  } = useContext(ChannelContext);
+
+  const { channels, selectedChannel } = useContext(ChannelContext);
   const { userDetails } = useContext(UserContext);
 
-  useMemo(() => {
+  useEffect(() => {
     const peerId = uuidv4();
     myPeerId.current = peerId;
     const peer = new Peer(peerId);
-    myPeer.current = peer;
+    setMe(peer);
+
+    // Cleanup function to destroy the Peer connection on unmount
+    return () => {
+      peer.disconnect();
+      peer.destroy();
+    };
   }, []);
 
   const joinAudio = async () => {
     setJoinedAudio(true);
     try {
-      await navigator.mediaDevices
-        .getUserMedia({ audio: true })
-        .then((media) => {
-          myStream.current = media;
-        });
-      ws.emit("join-audio", {
-        channelId: selectedChannel._id,
-        username: userDetails.username,
-        peerId: myPeerId.current,
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
       });
+      setStream(mediaStream);
+
+      if (me && selectedChannel && userDetails) {
+        ws.emit("join-audio", {
+          channelId: selectedChannel._id,
+          username: userDetails.username,
+          peerId: me.id,
+        });
+      }
     } catch (err) {
-      console.log("", err);
+      console.log("Error accessing media devices:", err);
     }
   };
 
   useEffect(() => {
-    ws.on("user-joined", ({ peerId, username }) => {
-      handleUserJoin({ peerId, username });
-    });
-    return () => {
-      ws.off("user-joined", handleUserJoin);
-    };
-  }, [ws]);
+    if (!me || !stream) return;
 
-  const handleUserJoin = ({ peerId, username }) => {
-    if (!myPeer.current) {
-      alert("Peer Not Available");
-      return;
-    }
-    alert("Hello");
-    console.log("Handle User Called");
-    console.log(peerId, username);
-    const call = myPeer.current.call(peerId, myStream.current, {
-      metadata: {
-        username: userDetails.username,
-      },
-    });
-    call.on("stream", (peerStream) => {
-      console.log("Call from", peerStream);
-      addPeer({ peerId, peerStream, username })
-    });
-  };
+    const handleUserJoined = ({ peerId, username }) => {
+      const call = me.call(peerId, stream, {
+        metadata: { username: userDetails.username },
+      });
+
+      call.on("stream", (peerStream) => {
+        dispatched(addPeerAction(peerId, peerStream, username));
+      });
+    };
+
+    const handleCall = (call) => {
+      const caller = call.metadata.username;
+      call.answer(stream, { metadata: { username: userDetails.username } });
+      console.log("Got A Call from ", call.peer);
+      call.on("stream", (peerStream) => {
+        console.log("Got A Stream From ", call.peer);
+        dispatched(addPeerAction(call.peer, peerStream, caller));
+      });
+    };
+
+    ws.on("user-joined", handleUserJoined);
+    me.on("call", handleCall);
+
+    // Cleanup listeners on unmount or dependencies change
+    return () => {
+      ws.off("user-joined", handleUserJoined);
+      leaveAudio();
+      me.off("call", handleCall);
+    };
+  }, [me, stream, ws, userDetails, dispatched]);
 
   const leaveAudio = () => {
+    ws.emit("leave-audio", { username: userDetails.username, channelId: selectedChannel._id });
     setJoinedAudio(false);
-    if (myStream.current) {
-      myStream.current.getTracks().forEach((track) => {
-        track.stop();
-      });
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+      setStream(null);
     }
-    dispatch({
-      type: `${clearPeers}`,
-    });
+    dispatched(clearPeersAction());
   };
-
-  useEffect(() => {
-    myPeer.current.on("call", (call) => {
-      const peerId = call.peer
-      const username = call.metadata.username;
-      call.answer(myStream.current);
-      call.on("stream", (peerStream) => {
-        addPeer({ peerId, peerStream, username })
-      });
-    });
-    return () => {
-      ws.off("receive-message", receiveMessage);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [myPeer.current]);
 
   return (
     <SocketContext.Provider
       value={{
+        myPeerId: myPeerId.current,
         ws,
         joinAudio,
         leaveAudio,
-        myPeer,
+        me,
+        myStream: stream,
+        peers,
         joinedAudio,
-        handleUserJoin,
         receiveMessage,
       }}
     >

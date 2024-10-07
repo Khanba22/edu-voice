@@ -8,13 +8,13 @@ const roomHandler = (socket, channelMap) => {
       channelMap[channelId] = {
         channelId,
         members: [username],
-        socketIdMaps: {
-          [socket.id]: { username, peerId },
+        userIdMap: {
+          [username]: { username, peerId },
         },
       };
     } else {
       channel.members.push(username);
-      channel.socketIdMaps[socket.id] = { username, peerId };
+      channel.userIdMap[username] = { username, peerId };
     }
     console.log(`Joining ${channelId}`);
     socket.join(channelId);
@@ -22,8 +22,11 @@ const roomHandler = (socket, channelMap) => {
     socket.emit("user-joined", { peerId, username });
   };
 
-  const leaveAudioGroup = ({ channelId }) => {
+  const leaveAudioGroup = ({ channelId , username }) => {
     const channel = channelMap[channelId];
+    delete channel.userIdMap[username]
+    console.log(channel)
+    socket.emit("left-audio",{username,channelId})
   };
 
   socket.on("join-audio", joinAudioGroup);
