@@ -1,0 +1,875 @@
+IP Addresses
+
+CONTENTS
+
+INTRODUCTION
+
+CLASSFUL ADDRESSING
+
+Different Network Classes
+
+Subnetting
+
+Classless Addressing
+
+Supernetting
+
+CIDR (classless Interdomain Routing)
+
+INTRODUCTION
+
+An IP address is a
+32-bit
+address.
+
+What is an IP Address?
+
+The IP addresses
+are
+unique.
+
+Address Space
+
+addr15
+
+addr1
+
+addr2
+
+addr41
+
+addr31
+
+addr226
+
+…………..
+
+…………..
+
+…………..
+
+…………..
+
+…………..
+
+…………..
+
+…………..
+
+Address space rule
+
+addr15
+
+addr1
+
+addr2
+
+addr41
+
+addr31
+
+addr226
+
+…………..
+
+…………..
+
+…………..
+
+…………..
+
+…………..
+
+…………..
+
+…………..
+
+The address space in a protocol
+
+That uses N-bits to define an
+
+Address is:
+
+2N
+
+The address space of IPv4 is
+
+232
+or
+4,294,967,296.
+
+IPv4 address space
+
+01110101 10010101 00011101 11101010
+
+Binary Notation
+
+Figure 4-1
+
+Dotted-decimal notation
+
+0111 0101 1001 0101 0001 1101 1110 1010
+
+Hexadecimal Notation
+
+75 95 1D EA
+
+0x75951DEA
+
+Example 1
+
+Change the following IP address from binary
+notation to dotted-decimal notation.
+
+10000001 00001011 00001011 11101111
+
+Solution
+
+129.11.11.239
+
+Example 2
+
+Change the following IP address from
+dotted-decimal notation to binary
+notation:
+
+111.56.45.78
+
+Solution
+
+01101111 00111000 00101101 01001110
+
+Example 3
+
+Solution
+
+Find the error in the following IP Address
+
+111.56.045.78
+
+There are no leading zeroes in
+
+Dotted-decimal notation (045)
+
+Example 3 (continued)
+
+Solution
+
+Find the error in the following IP Address
+
+75.45.301.14
+
+In decimal notation each number <= 255
+
+301 is out of the range
+
+Example 4
+
+Solution
+
+Change the following binary IP address
+
+Hexadecimal notation
+
+10000001 00001011 00001011 11101111
+
+0X810B0BEF or 810B0BEF16
+
+CLASSFUL
+
+ADDRESSING
+
+Figure 4-2
+
+Occupation of the address space
+
+In classful addressing the address space is
+
+divided into 5 classes:
+
+A, B, C, D, and E.
+
+Figure 4-3
+
+Finding the class in binary notation
+
+Figure 4-4
+
+Finding the address class
+
+Example 6
+
+Solution
+
+Find the class of the following IP addresses
+
+00000001 00001011 00001011 11101111
+
+11000001 00001011 00001011 11101111
+
+00000001 00001011 00001011 11101111
+
+1st is 0, hence it is Class A
+
+11000001 00001011 00001011 11101111
+
+1st and 2nd bits are 1, and 3rd bit is 0 hence, Class C
+
+Figure 4-5
+
+Finding the class in decimal notation
+
+Example 7
+
+Solution
+
+Find the class of the following addresses
+
+158.223.1.108
+
+227.13.14.88
+
+158.223.1.108
+
+1st byte = 158 (128<158<191) class B
+
+227.13.14.88
+
+1st byte = 227 (224<227<239) class D
+
+IP address with appending port number
+
+158.128.1.108:25
+
+the octet before colon is the IP address
+
+The number of colon (25) is the port number
+
+Figure 4-6
+
+Netid and hostid
+
+Network Addresses
+
+The network address is the first address.
+
+The network address defines the network to the
+rest of the Internet.
+
+Given the network address, we can find the
+class of the address, the block, and the range of
+the addresses in the block
+
+In classful addressing,
+the network address
+(the first address in the block)
+is the one that is assigned
+to the organization.
+
+Example 8
+
+Solution
+
+Given the network address 132.21.0.0, find the
+
+class, the block, and the range of the
+addresses
+
+The 1st byte is between 128 and 191.
+
+Hence, Class B
+
+The block has a netid of 132.21.
+
+The addresses range from
+
+132.21.0.0 to 132.21.255.255.
+
+Mask
+
+A mask is a 32-bit binary number.
+
+The mask is ANDeD with IP address to get
+
+The block address (Network address)
+
+Mask And IP address = Block Address
+
+Figure 4-10
+
+Masking concept
+
+Figure 4-11
+
+AND operation
+
+The network address is the
+beginning address of each block.
+It can be found by applying
+the default mask to
+any of the addresses in the block
+(including itself).
+It retains the netid of the block
+and sets the hostid to zero.
+
+Default Mask
+
+Class A default mask is 255.0.0.0
+
+Class B default mask is 255.255.0.0
+
+Class C Default mask 255.255.255.0
+
+Chapter 5
+
+Subnetting/Supernetting
+and
+Classless Addressing
+
+CONTENTS
+
+SUBNETTING
+
+SUPERNETTING
+
+CLASSLESS ADDRSSING
+
+SUBNETTING
+
+5.1
+
+IP addresses are designed with
+two levels of hierarchy.
+
+Figure 5-1
+
+A network with two levels of
+hierarchy (not subnetted)
+
+Figure 5-2
+
+A network with three levels of
+
+hierarchy (subnetted)
+
+Note
+
+Subnetting is done by borrowing bits from the
+host part and add them the network part
+
+Figure 5-3
+
+Addresses in a network with
+and without subnetting
+
+Figure 5-5
+
+Default mask and subnet mask
+
+Given an IP address, we can find the
+subnet address the same way we found the
+network address. We apply the mask to the
+address. We can do this in two ways:
+straight or short-cut.
+
+Finding the Subnet Address
+
+Straight Method
+
+In the straight method, we use binary
+notation for both the address and the
+mask and then apply the AND operation
+to find the subnet address.
+
+Example 9
+
+What is the subnetwork address if the
+destination address is 200.45.34.56 and
+the subnet mask is 255.255.240.0?
+
+Solution
+
+11001000 00101101 00100010 00111000
+
+11111111 11111111 11110000 00000000
+
+11001000 00101101 00100000 00000000
+
+The subnetwork address is 200.45.32.0.
+
+Short-Cut Method
+
+** If the byte in the mask is 255, copy
+the byte in the address.
+
+** If the byte in the mask is 0, replace
+the byte in the address with 0.
+
+** If the byte in the mask is neither 255
+nor 0, we write the mask and the address
+in binary and apply the AND operation.
+
+Example 10
+
+What is the subnetwork address if the
+destination address is 19.30.80.5 and the
+mask is 255.255.192.0?
+
+Figure 5-6
+
+Solution
+
+Figure 5-7
+
+Comparison of a default mask and
+
+a subnet mask
+
+The number of subnets must be
+a power of 2.
+
+Example 11
+
+A company is granted the site address
+201.70.64.0 (class C). The company needs
+six subnets. Design the subnets.
+
+Solution
+
+The number of 1s in the default
+mask is 24 (class C).
+
+Solution (Continued)
+
+The company needs six subnets. This number 6 is not a power
+of 2. The next number that is a power of 2 is 8 (23). We need 3
+more 1s in the subnet mask. The total number of 1s in the subnet
+mask is 27 (24 + 3).
+
+The total number of 0s is 5 (32 - 27).
+
+Solution (Continued)
+
+11111111 11111111 11111111 11100000
+
+or
+
+255.255.255.224
+
+The number of subnets is 8.
+
+The number of addresses in each subnet is 25 (5 is the
+number of 0s) or 32.
+
+See Next slide
+
+Figure 5-8
+
+Example 3
+
+Example 12
+
+A company is granted the site address
+181.56.0.0 (class B). The company needs
+1000 subnets. Design the subnets.
+
+Solution
+
+The number of 1s in the default mask is 16
+(class B).
+
+Solution (Continued)
+
+The company needs 1000 subnets. This number is not a power
+of 2. The next number that is a power of 2 is 1024 (210). We
+need 10 more 1s in the subnet mask.
+
+The total number of 1s in the subnet mask is 26 (16 + 10).
+
+The total number of 0s is 6 (32 − 26).
+
+Solution (Continued)
+
+The mask is
+
+11111111 11111111 11111111 11000000
+
+or
+
+255.255.255.192.
+
+The number of subnets is 1024.
+
+The number of addresses in each subnet is
+
+26 (6 is the number of 0s) or 64.
+
+See next slide
+
+Figure 5-9
+
+Example 4
+
+Figure 5-10
+
+Variable-length subnetting
+
+SUPERNETTING
+
+What is suppernetting?
+
+Supernetting is the opposite of subnetting
+
+In subnetting you borrow bits from the host
+part
+
+Supernetting is done by borrowing bits from
+the network side.
+
+And combine a group of networks into one
+large supernetwork.
+
+Figure 5-11
+
+A supernetwork
+
+Rules:
+
+▲ The number of blocks must be a power of 2 (1,
+2, 4, 8, 16, . . .).
+
+▲ The blocks must be contiguous in the address
+space (no gaps between the blocks).
+
+▲ The third byte of the first address in the
+superblock must be evenly divisible by the number
+of blocks. In other words, if the number of blocks is
+N, the third byte must be divisible by N.
+
+Example 5
+
+A company needs 600 addresses. Which of
+the following set of class C blocks can be
+used to form a supernet for this company?
+
+198.47.32.0
+198.47.33.0
+198.47.34.0
+
+198.47.32.0
+198.47.42.0
+198.47.52.0
+198.47.62.0
+
+198.47.31.0
+198.47.32.0
+198.47.33.0
+198.47.52.0
+
+198.47.32.0
+198.47.33.0
+198.47.34.0
+198.47.35.0
+
+Solution
+
+1: No, there are only three blocks.
+
+2: No, the blocks are not contiguous.
+
+3: No, 31 in the first block is not divisible by 4.
+
+4: Yes, all three requirements are fulfilled.
+
+In subnetting,
+we need the first address of the
+subnet and the subnet mask to
+define the range of addresses.
+
+In supernetting,
+we need the first address of
+the supernet
+and the supernet mask to
+define the range of addresses.
+
+Figure 5-12
+
+Comparison of subnet, default,
+
+and supernet masks
+
+Example 13
+
+We need to make a supernetwork out of 16
+class C blocks. What is the supernet mask?
+
+Solution
+
+We need 16 blocks. For 16 blocks we need to change four 1s to 0s in
+the default mask. So the mask is
+
+11111111 11111111 11110000 00000000
+
+or
+
+255.255.240.0
+
+Example 14
+
+A supernet has a first address of 205.16.32.0 and a
+supernet mask of 255.255.248.0. A router receives three
+packets with the following destination addresses:
+
+205.16.37.44
+
+205.16.42.56
+
+205.17.33.76
+
+Which packet belongs to the supernet?
+
+Solution
+
+We apply the supernet mask to see if we can find
+the beginning address.
+
+205.16.37.44 AND 255.255.248.0
+🡺 205.16.32.0
+
+205.16.42.56 AND 255.255.248.0
+🡺 205.16.40.0
+
+205.17.33.76 AND 255.255.248.0
+🡺 205.17.32.0
+
+Only the first address belongs to this supernet.
+
+Example 15
+
+A supernet has a first address of 205.16.32.0 and a
+supernet mask of 255.255.248.0. How many blocks are
+in this supernet and what is the range of addresses?
+
+Solution
+
+The supernet has 21 1s. The default mask has 24 1s.
+Since the difference is 3, there are 23 or 8 blocks in
+this supernet. The blocks are 205.16.32.0 to
+205.16.39.0. The first address is 205.16.32.0. The last
+address is 205.16.39.255.
+
+CLASSLESS
+
+ADDRESSING
+
+5.3
+
+Figure 5-13
+
+Variable-length blocks
+
+Number of Addresses in a Block
+
+There is only one condition on the number
+of addresses in a block; it must be a power
+of 2 (2, 4, 8, . . .). A household may be
+given a block of 2 addresses. A small
+business may be given 16 addresses. A large
+organization may be given 1024 addresses.
+
+Beginning Address
+
+The beginning address must be evenly divisible
+by the number of addresses. For example, if a
+block contains 4 addresses, the beginning
+address must be divisible by 4. If the block has
+less than 256 addresses, we need to check only
+the rightmost byte. If it has less than 65,536
+addresses, we need to check only the two
+rightmost bytes, and so on.
+
+Example 16
+
+Which of the following can be the beginning address of a block
+that contains 1024 addresses?
+
+205.16.37.32
+
+190.16.42.0
+
+17.17.32.0
+
+123.45.24.52
+
+Solution
+
+To be divisible by 1024, the rightmost byte of an address
+should be 0 and the second rightmost byte must be divisible by
+4. Only the address 17.17.32.0 meets this condition.
+
+Figure 5-14
+
+Slash notation
+
+Slash notation is also called
+CIDR
+notation.
+
+Example 17
+
+A small organization is given a block with the
+beginning address and the prefix length
+205.16.37.24/29 (in slash notation). What is the range
+of the block?
+
+The beginning address is 205.16.37.24. To find
+the last address we keep the first 29 bits and
+change the last 3 bits to 1s.
+
+Beginning: 11001111 00010000 00100101 00011000
+
+Ending : 11001111 00010000 00100101 00011111
+
+There are only 8 addresses in this block.
+
+Solution
+
+Example 17 cont’d
+
+We can find the range of addresses in Example 17 by
+another method. We can argue that the length of the
+suffix is 32 − 29 or 3. So there are 23 = 8 addresses in
+this block. If the first address is 205.16.37.24, the last
+address is 205.16.37.31 (24 + 7 = 31).
+
+A block in classes A, B, and C
+can easily be represented in slash
+notation as
+A.B.C.D/ n
+where n is
+either 8 (class A), 16 (class B), or
+24 (class C).
+
+Example 18
+
+What is the network address if one of the addresses is
+167.199.170.82/27?
+
+Solution
+
+The prefix length is 27, which means that we
+must keep the first 27 bits as is and change the
+remaining bits (5) to 0s. The 5 bits affect only
+the last byte. The last byte is 01010010.
+Changing the last 5 bits to 0s, we get 01000000
+or 64. The network address is
+167.199.170.64/27.
+
+Example 19
+
+An organization is granted the block 130.34.12.64/26. The
+organization needs to have four subnets. What are the subnet
+addresses and the range of addresses for each subnet?
+
+Solution
+
+The suffix length is 6. This means the total
+number of addresses in the block is 64 (26). If
+we create four subnets, each subnet will have 16
+addresses.
+
+Solution (Continued)
+
+Let us first find the subnet prefix (subnet mask). We need four
+subnets, which means we need to add two more 1s to the site
+prefix. The subnet prefix is then /28.
+
+Subnet 1: 130.34.12.64/28 to 130.34.12.79/28.
+
+Subnet 2 : 130.34.12.80/28 to 130.34.12.95/28.
+
+Subnet 3: 130.34.12.96/28 to 130.34.12.111/28.
+
+Subnet 4: 130.34.12.112/28 to 130.34.12.127/28.
+
+See Figure 5.15
+
+Figure 5-15
+
+Example 19 cont’d
+
+Example 20
+
+An ISP is granted a block of addresses starting with
+190.100.0.0/16. The ISP needs to distribute these addresses to
+three groups of customers as follows:
+
+1. The first group has 64 customers; each needs 256 addresses.
+
+2. The second group has 128 customers; each needs 128
+addresses.
+
+3. The third group has 128 customers; each needs 64 addresses.
+Design the subblocks and give the slash notation for each
+subblock. Find out how many addresses are still available after
+these allocations.
+
+Solution
+
+Group 1
+
+For this group, each customer needs 256 addresses. This means the
+suffix length is 8 (28 = 256). The prefix length is then 32 − 8 = 24.
+
+01: 190.100.0.0/24 🡺190.100.0.255/24
+
+02: 190.100.1.0/24 🡺190.100.1.255/24
+
+…………………………………..
+
+64: 190.100.63.0/24🡺190.100.63.255/24
+
+Total = 64 × 256 = 16,384
+
+Solution (Continued)
+
+Group 2
+
+For this group, each customer needs 128 addresses. This means
+the suffix length is 7 (27 = 128). The prefix length is then 32 − 7 =
+25. The addresses are:
+
+001: 190.100.64.0/25 🡺190.100.64.127/25
+
+002: 190.100.64.128/25 🡺190.100.64.255/25
+
+………………..
+
+128: 190.100.127.128/25 🡺190.100.127.255/25
+
+Total = 128 × 128 = 16,384
+
+Solution (Continued)
+
+Group 3
+
+For this group, each customer needs 64 addresses. This means the
+suffix length is 6 (26 = 64). The prefix length is then 32 − 6 = 26.
+
+001:190.100.128.0/26 🡺190.100.128.63/26
+
+002:190.100.128.64/26 🡺190.100.128.127/26
+
+…………………………
+
+128:190.100.159.192/26 🡺190.100.159.255/26
+
+Total = 128 × 64 = 8,192
+
+Solution (Continued)
+
+Number of granted addresses: 65,536
+
+Number of allocated addresses: 40,960
+
+Number of available addresses: 24,576

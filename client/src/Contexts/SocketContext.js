@@ -46,6 +46,7 @@ export const SocketProvider = ({ children }) => {
     // Cleanup function to destroy the Peer connection on unmount
     return () => {
       peer.disconnect();
+      leaveAudio();
       peer.destroy();
     };
   }, []);
