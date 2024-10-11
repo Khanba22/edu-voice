@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import data from "../tempData.json";
+import data from "../TEMPDATA.JSON";
 import ScriptReader from './ScriptReader';
 
 const MainScreen = () => {

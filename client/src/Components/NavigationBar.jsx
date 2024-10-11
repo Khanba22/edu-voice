@@ -9,17 +9,17 @@ const NavigationBar = () => {
   const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
   return (
-    <div className="w-screen overflow-x-clip flex items-center bg-black fixed z-50 top-0 h-16 text-white">
+    <div className='w-full h-[12vh] flex justify-between items-center px-20'>
       <div className="w-full h-full justify-between relative p-5 hidden lg:flex">
-        <div className="flex items-center w-2/6">Logo and Company Name</div>
+        <div className="flex items-center text-white font-semibold  text-2xl ">Edu Voice</div>
         <div className="flex items-center w-2/6 justify-evenly">
           <Link to="/channel">
-            <button className="hover:underline hover:scale-105">Channel</button>
+            <button className="hover:underline text-black font-medium text-lg hover:scale-105">Channel</button>
           </Link>
-          <button className="hover:underline">Link 2</button>
-          <button className="hover:underline">Link 3</button>
+          <button className="hover:underline text-black font-medium text-lg">Link 2</button>
+          <button className="hover:underline text-black font-medium text-lg">Link 3</button>
           <button
-            className="hover:underline"
+            className="hover:underline text-black font-medium text-lg"
             onClick={() => {
               setHideExtra(!hideExtra);
             }}
