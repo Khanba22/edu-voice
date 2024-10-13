@@ -14,7 +14,7 @@ const CreateUser = () => {
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
   const handleSubmit = async () => {
-    await fetch("http://localhost:4000/user/create-user", {
+    await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/create-user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

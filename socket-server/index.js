@@ -23,6 +23,7 @@ const io = new Server(server, {
 });
 app.use("/user",require("./Routes/UserRoute"))
 app.use("/channel",require("./Routes/ChannelRoutes"))
+app.use("/document",require("./Routes/DocumentRoutes"))
 
 // Remove Later For testing only
 app.use("",require("./Routes/TempRoutes"))

@@ -14,16 +14,24 @@ const ChannelSchema = mongoose.Schema({
   documents: [
     {
       title: { type: String, required: true },
-      uploadedFile: { type: String, required: true },
       uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
       uploadDate: { type: Date, default: Date.now },
-      description: { type: String },
-      fileType: { type: String, required: true, match: /\.(pdf|doc|docx|ppt|pptx)$/ }, // Example validation
-      topics: [{ type: mongoose.Schema.Types.ObjectId, ref: "Topic" }],
+      filePath: { type: String, required: true },
+      topics: [
+        {
+          topicName: { type: String, required: true },
+          isTranscript: { type: Boolean, default: false },
+          topicId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Topic",
+            required: false,
+          },
+        },
+      ],
     },
   ],
   createDate: { type: Date, default: Date.now },
   admins: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 });
 
-module.exports = mongoose.model("Channel", ChannelSchema)
+module.exports = mongoose.model("Channel", ChannelSchema);

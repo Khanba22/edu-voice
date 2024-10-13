@@ -25,7 +25,7 @@ def extract_text_from_pdf(file_path):
             text += page.get_text("text")
     return text
 
-@app.route('/upload', methods=['GET'])
+@app.route('/upload', methods=['POST'])
 def upload_file():
     # Check if the request has a file part
     if 'file' not in request.files:
@@ -37,18 +37,24 @@ def upload_file():
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
+    print("Received file:", file.filename)
+
     # Save the file
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     file.save(file_path)
+
     # Extract text from the document
     text = extract_text_from_pdf(file_path)
+    print("Extracted text:", text[:1000])  # Log first 1000 characters for debugging
 
     # Get topics from the extracted text
-    result = extractTopic(text)
-    print(result)
-
-    # Return the topics as a JSON response
-    return jsonify(result), 200
+    try:
+        extracted_data = extractTopic(text)
+        print("Extracted Data:", extracted_data)
+        return jsonify(extracted_data), 200
+    except Exception as e:
+        print("Error during topic extraction:", str(e))  # Log the error message
+        return jsonify({"error": "Failed to extract topics"}), 500
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

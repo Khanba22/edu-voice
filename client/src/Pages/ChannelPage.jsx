@@ -2,18 +2,18 @@ import React, { useContext, useEffect, useState } from "react";
 import ChannelList from "../Components/ChannelList";
 import MainScreen from "../Components/MainScreen";
 import ChannelHeader from "../Components/ChannelHeader";
-import ChannelChats from "../Components/ChannelChats";
 import ChannelSideBar from "../Components/ChannelSideBar";
 import { SocketContext, SocketProvider } from "../Contexts/SocketContext";
 import { AuthContext } from "../Contexts/AuthContext";
 import { UserContext } from "../Contexts/UserContext";
 import { ChannelContext } from "../Contexts/ChannelContext";
 import AddChannelPopup from "../Components/AddChannelPopup";
+import ChannelDetails from "../Components/ChannelDetails";
 
 const ChannelPage = () => {
   const { userDetails } = useContext(UserContext);
   const { isAuthenticated } = useContext(AuthContext);
-  const { channels, setSelectedChannel, selectedChannel, setChannels } =
+  const { channels, setSelectedChannel, selectedChannel, setChannels , getChannels } =
     useContext(ChannelContext);
   const { ws, handleUserJoin, receiveMessage } = useContext(SocketContext);
   const [showPopUp, setShowPopUp] = useState(false);
@@ -26,24 +26,7 @@ const ChannelPage = () => {
     setSelectedChannel(channels[index]);
   };
 
-  const getChannels = async () => {
-    if (!userDetails) {
-      return;
-    }
-    await fetch("http://localhost:4000/user/get-channels", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId: userDetails._id }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setChannels(data.channels);
-      });
-  };
+
 
   useEffect(() => {
     getChannels();
@@ -66,7 +49,7 @@ const ChannelPage = () => {
             channels={channels}
             selectChannel={selectChannel}
           />
-          <ChannelChats selectedChannel={selectedChannel} />
+          <ChannelDetails selectedChannel={selectedChannel} />
           <MainScreen selectedChannel={selectedChannel} />
           <ChannelSideBar selectedChannel={selectedChannel} />
         </div>

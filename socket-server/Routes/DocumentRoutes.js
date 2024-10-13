@@ -1,99 +1,92 @@
 const express = require("express");
+const multer = require("multer");
+const axios = require("axios");
+const FormData = require("form-data");
+const fs = require("fs");
+const path = require("path");
 const router = express.Router();
-const Channel = require("../Models/ChannelSchema");
-const Topic = require("../Models/TopicSchema"); // Assuming the Document model is in the Models folder
+const ChannelSchema = require("../Models/ChannelSchema");
 
-// Route to get documents for a specific channel
-router.post("/get-documents", async (req, res) => {
-  try {
-    const { channelId } = req.body;
-    const channel = await Channel.findById(channelId).populate("documents");
-    if (!channel) {
-      return res.status(404).json({ message: "Channel not found" });
-    }
-    res.json(channel.documents);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+const upload = multer({ dest: "uploads/" });
+
+router.post("/add-document", upload.single("uploadedFile"), async (req, res) => {
+  const { channelId, uploadedBy } = req.body;
+  const uploadedFile = req.file;
+
+  // Move filePath declaration outside of try block
+  const filePath = uploadedFile ? path.resolve(uploadedFile.path) : null;
+
+  if (!channelId || !uploadedBy || !uploadedFile) {
+    return res.status(400).json({ message: "Missing required fields." });
   }
-});
 
-// Route to add a document to a channel
-router.post("/add-document", async (req, res) => {
   try {
-    const { channelId, title, uploadedFile, uploadedBy, description, fileType } = req.body;
-    const document = { title, uploadedFile, uploadedBy, description, fileType };
-    const channel = await Channel.findByIdAndUpdate(
-      channelId,
-      { $push: { documents: document } },
-      { new: true }
+    // Prepare form data for the LLM server
+    const formData = new FormData();
+    formData.append("channelId", channelId);
+    formData.append("uploadedBy", uploadedBy);
+    formData.append("file", fs.createReadStream(filePath));
+
+    // Forward the request to the LLM server
+    const llmResponse = await axios.post(
+      `${process.env.LLM_SERVER_URL}/upload`,
+      formData,
+      {
+        headers: {
+          ...formData.getHeaders(),
+        },
+      }
     );
-    if (!channel) {
-      return res.status(404).json({ message: "Channel not found" });
-    }
-    res.status(201).json(channel);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
 
-// Route to get topics from a document
-router.post("/get-topics", async (req, res) => {
-  try {
-    const { documentId } = req.body;
-    const document = await Channel.findOne({ "documents._id": documentId })
-      .select({ "documents.$": 1 })
-      .populate("documents.topics");
-    if (!document) {
-      return res.status(404).json({ message: "Document not found" });
-    }
-    res.json(document.documents[0].topics);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+    // Clean up the temporary uploaded file
+    fs.unlinkSync(filePath);
 
-// Route to add a topic to a document
-router.post("/add-topic", async (req, res) => {
-  try {
-    const { documentId, topicName, transcript, notes, tables, graphs } = req.body;
-    const newTopic = new Topic({ topicName, transcript, notes, tables, graphs });
-    await newTopic.save();
+    // Handle successful response from the LLM server
+    if (llmResponse.status === 200) {
+      console.log(llmResponse.data);
+      const data = llmResponse.data
+      console.log(typeof data);
+      console.log(data["main_topic"] , data["subtopics"]);
+      if (!data["main_topic"] && !data["subtopics"]) {
+        console.log("Topics Not found")
+        return;
+      }
+      const topicObj = []
+      for (let index = 0; index < data["subtopics"].length; index++) {
+        const element = data["subtopics"][index];
+        topicObj.push({
+          topicName: element,
+          isTranscript: false,
+        });
+      }
+      const document = {
+        uploadedBy, // Assuming uploadedBy is an ObjectId
+        title: data["main_topic"],
+        topics: topicObj, // Make sure these are ObjectIds or handle the conversion
+        filePath: uploadedFile.path // Store the path to the uploaded file
+      };
+
+      // Add the document to the specified channel
+      const updatedChannel = await ChannelSchema.findByIdAndUpdate(
+        channelId,
+        {
+          $push: { documents: document }
+        },
+        { new: true, useFindAndModify: false } // Return the updated document
+      );
+      // Return the updated channel data
+      console.log(updatedChannel);
+      return res.status(200).json(updatedChannel);
+    }
     
-    const channel = await Channel.findOneAndUpdate(
-      { "documents._id": documentId },
-      { $push: { "documents.$.topics": newTopic._id } },
-      { new: true }
-    );
-
-    if (!channel) {
-      return res.status(404).json({ message: "Document not found" });
-    }
-
-    res.status(201).json(newTopic);
+    return res.status(llmResponse.status).json(llmResponse.data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
+    console.error("Error forwarding to LLM server:", error);
 
-// Route to remove a topic from a document
-router.post("/remove-topic", async (req, res) => {
-  try {
-    const { documentId, topicId } = req.body;
+    // Ensure file cleanup in case of an error
+    if (filePath && fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
-    const channel = await Channel.findOneAndUpdate(
-      { "documents._id": documentId },
-      { $pull: { "documents.$.topics": topicId } },
-      { new: true }
-    );
-
-    if (!channel) {
-      return res.status(404).json({ message: "Document or topic not found" });
-    }
-
-    await Topic.findByIdAndDelete(topicId); // Optionally delete the topic itself
-    res.status(200).json({ message: "Topic removed successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: "Error uploading document." });
   }
 });
 
