@@ -6,7 +6,7 @@ export const ChannelContext = createContext(null);
 export const ChannelContextProvider = ({ children }) => {
   const [channels, setChannels] = useState([]);
   const [selectedChannel, setSelectedChannel] = useState(null);
-  const {userDetails} = useContext(UserContext)
+  const { userDetails } = useContext(UserContext);
   const [peers, setPeers] = useState({});
 
   const addPeer = ({ peerId, peerStream, username }) => {
@@ -40,6 +40,13 @@ export const ChannelContextProvider = ({ children }) => {
       })
       .then((data) => {
         setChannels(data.channels);
+        if (!selectedChannel) {
+          return;
+        }
+        const selected = data.channels.findIndex(
+          (x) => x._id === selectedChannel._id
+        );
+        setSelectedChannel(data.channels[selected]);
       });
   };
 

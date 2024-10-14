@@ -1,5 +1,3 @@
-from groq import Groq
-
 import json
 from groq import Groq  # Ensure you have the appropriate import for the Groq client
 

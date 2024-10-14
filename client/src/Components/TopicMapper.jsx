@@ -19,12 +19,20 @@ const TopicView = ({ document }) => {
         className="w-full bg-gray-200"
         onClick={(e) => {
           e.stopPropagation();
-          setShow(!show);
+          setShow(true);
         }}
       >
         <div className="flex justify-between px-6">
           <h1>{document.title}</h1>
-          <p className={`${show && "rotate-180"}`}> {"V"}</p>
+          <button
+            className={`${show && "rotate-180"}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShow(!show);
+            }}
+          >
+            {"V"}
+          </button>
         </div>
         <div className={`${!show && "hidden"}`}>
           {document.topics.map((topic) => (

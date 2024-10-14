@@ -5,7 +5,7 @@ import TopicMapper from "./TopicMapper";
 
 const ChannelDetails = () => {
   const { userDetails } = useContext(UserContext);
-  const { selectedChannel } = useContext(ChannelContext);
+  const { selectedChannel , getChannels} = useContext(ChannelContext);
 
   const handleFile = async (e) => {
     const selectedFile = e.target.files[0];
@@ -30,6 +30,7 @@ const ChannelDetails = () => {
         const channelData = await response.json();
         console.log("Document uploaded successfully:", channelData);
         e.target.value = null; // Reset the input field
+        getChannels()
       } else {
         const errorData = await response.json();
         console.log(`Error: ${errorData.message}`);
