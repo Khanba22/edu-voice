@@ -8,6 +8,7 @@ export const ChannelContextProvider = ({ children }) => {
   const [selectedChannel, setSelectedChannel] = useState(null);
   const { userDetails } = useContext(UserContext);
   const [peers, setPeers] = useState({});
+  const [currentTopic,setCurrentTopic] = useState(null)
 
   const addPeer = ({ peerId, peerStream, username }) => {
     setPeers({
@@ -53,6 +54,8 @@ export const ChannelContextProvider = ({ children }) => {
   return (
     <ChannelContext.Provider
       value={{
+        currentTopic,
+        setCurrentTopic,
         addPeer,
         removePeer,
         peers,

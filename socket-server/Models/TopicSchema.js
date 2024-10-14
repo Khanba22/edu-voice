@@ -22,7 +22,7 @@ const NodeSchema = mongoose.Schema({
 // Graph Schema
 const GraphSchema = mongoose.Schema({
   graphName: { type: String, required: true },
-  graphType: { type: String, enum: ["Bar", "Pie", "Tree"], required: true },
+  graphType: { type: String, required: true },
   nodes: [NodeSchema] // Array of nodes within the graph
 });
 

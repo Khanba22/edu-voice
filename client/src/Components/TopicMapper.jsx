@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { ChannelContext } from "../Contexts/ChannelContext";
 
 const TopicMapper = ({ documents }) => {
   return (
@@ -11,7 +12,23 @@ const TopicMapper = ({ documents }) => {
 };
 
 const TopicView = ({ document }) => {
+  const { currentTopic, setCurrentTopic } = useContext(ChannelContext);
   const [show, setShow] = useState(false);
+  const getTopicData = async (topicId) => {
+    await fetch(`${process.env.REACT_APP_BACKEND_URL}/document/get-topic`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ topicId }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setCurrentTopic(data)
+      });
+  };
 
   return (
     <>
@@ -37,7 +54,13 @@ const TopicView = ({ document }) => {
         <div className={`${!show && "hidden"}`}>
           {document.topics.map((topic) => (
             <>
-              <p>{topic.topicName}</p>
+              <p
+                onClick={() => {
+                  getTopicData(topic.topicId);
+                }}
+              >
+                {topic.topicName}
+              </p>
             </>
           ))}
         </div>

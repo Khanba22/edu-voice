@@ -1,10 +1,10 @@
 import json
 from groq import Groq  # Ensure you have the appropriate import for the Groq client
-
+import os
 def extractTopic(text):
     print(text)
     client = Groq(
-        api_key="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",
+        api_key=os.environ.get("GROQ_API_KEY"),
     )
     completion = client.chat.completions.create(
         model="llama3-8b-8192",

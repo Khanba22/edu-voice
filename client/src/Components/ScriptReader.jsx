@@ -6,6 +6,7 @@ const ScriptReader = ({ script }) => {
   const [sentences, setSentences] = useState([]);
   const [voices, setVoices] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState(null);
+  const [canSwitch,setCanSwitch] = useState(false)
 
   useEffect(() => {
     const populateVoices = () => {
@@ -24,7 +25,17 @@ const ScriptReader = ({ script }) => {
     populateVoices(); // Call it immediately in case the voices are already loaded
   }, []);
 
+  useEffect(() => {
+    stopSpeech()
+
+    if (!canSwitch) {
+      return;
+    }
+    handleSpeech()
+  },[script,canSwitch])
+
   const handleSpeech = () => {
+    setCanSwitch(false);
     if (!isSpeaking && selectedVoice) {
       const sentenceArray = script.match(/[^.!?]+[.!?]+/g) || [script];
       setSentences(sentenceArray);
@@ -60,6 +71,7 @@ const ScriptReader = ({ script }) => {
       setIsSpeaking(true);
       speechSynthesis.speak(utterance);
     }
+    setCanSwitch(true)
   };
 
   const stopSpeech = () => {

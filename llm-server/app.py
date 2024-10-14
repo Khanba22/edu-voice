@@ -70,19 +70,22 @@ def generateTranscript():
     result = []
     try:
         for topic in topics:
-            data.append({"role": "user", "content": topic})
+            data.append({"role": "user", "content": "Generate JSON data for this Topic : "+topic})
             print("Getting data for topic =", topic)
-            try:
-                dataJson = getData(data)
-                data.append({"role": "assistant", "content": dataJson})
-                result.append({
-                    "topicName": topic,
-                    "metaData": json.loads(dataJson)
-                })
-            except Exception as e:
-                print(f"Error with topic '{topic}':", e)
-                return jsonify({"error": "Unable to process a topic", "details": str(e)}), 500
-
+            retry = 5
+            while retry:
+                try:
+                    dataJson = getData(data)
+                    res = json.loads(dataJson)
+                    break
+                except Exception as e:
+                    print(f"Error with topic '{topic}': Retries Left {retry}")
+                    retry-=1
+            data.append({"role": "assistant", "content": dataJson})
+            result.append({
+                "topicName": topic,
+                "metaData": res
+            })
         return jsonify(result), 200
 
     except Exception as e:

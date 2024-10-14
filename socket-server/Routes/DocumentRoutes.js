@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const router = express.Router();
 const ChannelSchema = require("../Models/ChannelSchema");
+const Topic = require("../Models/TopicSchema");
 
 const upload = multer({ dest: "uploads/" });
 
@@ -18,6 +19,33 @@ const generateTranscripts = async (topics) => {
       return llmResponse.data;
     }
   }
+};
+
+const createTopics = async (data) => {
+  const noteIds = []; // Array to store created note IDs
+
+  for (let index = 0; index < data.length; index++) {
+    const element = data[index]; // Access each element in the data array
+    // Create a new topic object from the element
+    const newTopic = new Topic({
+      topicName: element.metaData.topicName,
+      transcript: element.metaData.transcript,
+      notes: element.metaData.notes, // Assuming notes are already an array of strings
+      tables: element.metaData.tables, // Assuming tables is already in the required format
+      graphs: element.metaData.graphs, // Assuming graphs is already in the required format
+    });
+
+    try {
+      // Save the topic to the database
+      const savedTopic = await newTopic.save();
+      // Store the created note ID
+      noteIds.push({ id: savedTopic._id, topicName: savedTopic.topicName });
+    } catch (error) {
+      console.error("Error creating topic:", error);
+    }
+  }
+
+  return noteIds; // Return the array of created note IDs
 };
 
 router.post(
@@ -63,28 +91,31 @@ router.post(
           return;
         }
         const topicObj = [];
-        for (let index = 0; index < data["subtopics"].length; index++) {
-          const element = data["subtopics"][index];
+        const generatedTranscripts = await generateTranscripts(
+          data["subtopics"]
+        );
+        const newTopics = await createTopics(generatedTranscripts);
+        for (let i = 0; i < newTopics.length; i++) {
+          const element = newTopics[i];
           topicObj.push({
-            topicName: element,
-            isTranscript: false,
+            topicName: element.topicName,
+            isTranscript: true,
+            topicId: element.id,
           });
         }
-        const document = {
-          uploadedBy, // Assuming uploadedBy is an ObjectId
-          title: data["main_topic"],
-          topics: topicObj, // Make sure these are ObjectIds or handle the conversion
-          filePath: uploadedFile.path, // Store the path to the uploaded file
-        };
 
-        const generatedTranscripts = await generateTranscripts(data["subtopics"]);
-        console.log(generatedTranscripts);
+        const newDocument = {
+          title: data["main_topic"],
+          uploadedBy,
+          filePath: uploadedFile.path,
+          topics: topicObj,
+        };
 
         // Add the document to the specified channel
         const updatedChannel = await ChannelSchema.findByIdAndUpdate(
           channelId,
           {
-            $push: { documents: document },
+            $push: { documents: newDocument },
           },
           { new: true, useFindAndModify: false } // Return the updated document
         );
@@ -106,8 +137,10 @@ router.post(
   }
 );
 
-router.post("/generate-transcripts", async (req, res) => {
-  const { docId } = req.body;
+router.post("/get-topic", async (req, res) => {
+  const { topicId } = req.body;
+  const topicData = await Topic.findById(topicId);
+  res.status(200).json(topicData);
 });
 
 module.exports = router;
