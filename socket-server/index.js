@@ -36,7 +36,7 @@ const channelMap = {}
 
 io.on("connection", (socket) => {
   roomHandler(socket, channelMap);
-  console.log("Socket Connected");
+  // console.log("Socket Connected");
   socket.on("disconnect", () => {});
 });
 
