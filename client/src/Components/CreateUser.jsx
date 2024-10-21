@@ -4,13 +4,40 @@ import { UserContext } from "../Contexts/UserContext";
 import SignUpForm from "./SignUpForm";
 
 const CreateUser = () => {
-
-  // const navigate = useNavigate();
-  // const { setUserDetails, setIsAuthenticated } = useContext(UserContext);
-  // const [details, setDetails] = useState({
-  //   username: "",
-  //   password: "",
-  // });
+  
+  const handleChange = (e) => {
+    setDetails({ ...details, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async () => {
+    await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/create-user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...details,
+        email,
+      }),
+    })
+      .then((res) => {
+        if (res.status === 201) {
+          alert("User Created Successfully");
+          return res.json();
+        } else {
+          console.log("Failed To Create User");
+          return null;
+        }
+      })
+      .then((data) => {
+        if (data == null) {
+          alert("Error In Creating User");
+        } else {
+          setIsAuthenticated(true);
+          setUserDetails(data.user);
+          navigate("/");
+        }
+      });
+  };
 
   // const handleChange = (e) => {
   //   setDetails({ ...details, [e.target.name]: e.target.value });

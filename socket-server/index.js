@@ -23,6 +23,7 @@ const io = new Server(server, {
 });
 app.use("/user",require("./Routes/UserRoute"))
 app.use("/channel",require("./Routes/ChannelRoutes"))
+app.use("/document",require("./Routes/DocumentRoutes"))
 
 // Remove Later For testing only
 app.use("",require("./Routes/TempRoutes"))
@@ -35,7 +36,7 @@ const channelMap = {}
 
 io.on("connection", (socket) => {
   roomHandler(socket, channelMap);
-  console.log("Socket Connected");
+  // console.log("Socket Connected");
   socket.on("disconnect", () => {});
 });
 

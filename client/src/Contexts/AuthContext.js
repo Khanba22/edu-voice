@@ -36,11 +36,13 @@ export const AuthContextProvider = ({ children }) => {
     setUserDetails(null);
     localStorage.removeItem("userDetails");
   };
+  
 
   const login = async () => {
+    console.log(process.env.REACT_APP_BACKEND_URL, "BackendURL")
     if (localStorage.getItem("userDetails")) {
       const userData = JSON.parse(localStorage.getItem("userDetails"));
-      await fetch("http://localhost:4000/user/get-user", {
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/user/get-user`, {
         method: "POST",
         body: JSON.stringify({ email: userData.email }),
         headers: {
