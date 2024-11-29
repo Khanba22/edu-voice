@@ -9,15 +9,12 @@ import {
 } from "react";
 import socketIo from "socket.io-client";
 import Peer from "peerjs";
-import { useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { clearPeers } from "../Redux/PeerSlice";
 import { UserContext } from "./UserContext";
 import { ChannelContext } from "./ChannelContext";
 import {
   addPeerAction,
   clearPeersAction,
-  removePeerAction,
 } from "./peerActions";
 import { peerReducer } from "./peerReducer";
 
@@ -36,7 +33,7 @@ export const SocketProvider = ({ children }) => {
     // Handle incoming messages here (optional)
   };
 
-  const { channels, selectedChannel } = useContext(ChannelContext);
+  const {  selectedChannel } = useContext(ChannelContext);
   const { userDetails } = useContext(UserContext);
 
   useEffect(() => {
@@ -61,6 +58,7 @@ export const SocketProvider = ({ children }) => {
       leaveAudio();
       peer.destroy();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userDetails]); // Only run once when userDetails are available
 
   const joinAudio = async () => {
@@ -133,6 +131,7 @@ export const SocketProvider = ({ children }) => {
       leaveAudio();
       me.off("call", handleCall);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [me, stream, ws, userDetails, dispatched, selectedChannel]);
 
   const leaveAudio = () => {
