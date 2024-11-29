@@ -89,7 +89,7 @@ const ScriptReader = ({ script }) => {
   return (
     <>
       {/* Script Reader */}
-      <div className="bg-slate-400 h-1/6 p-4">
+      <div className="bg-neutral-800 border-y-2 text-white border-neutral-700 h-1/6 p-2">
         <h3 className="text-lg font-semibold">Script Reader</h3>
         <p>{currentSentence || "Click the button to read the script"}</p>
 
@@ -97,11 +97,11 @@ const ScriptReader = ({ script }) => {
         <select
           id="voiceSelect"
           onChange={handleVoiceChange}
-          className="mb-4 p-2 border rounded"
+          className="mb-4 p-2 border rounded text-black"
           disabled={isSpeaking} // Disable the dropdown while speaking
         >
           {voices.map((voice, index) => (
-            <option key={index} value={index}>
+            <option className="text-black" key={index} value={index}>
               {voice.name} ({voice.lang})
             </option>
           ))}

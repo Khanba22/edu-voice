@@ -57,9 +57,9 @@ router.get("/get-channels", async (req, res) => {
 });
 
 // Get all members of a channel
-router.get("/get-members", async (req, res) => {
+router.post("/get-members", async (req, res) => {
   try {
-    const { channelId } = req.query;
+    const { channelId } = req.body;
     const channel = await Channel.findById(channelId).populate("members");
 
     if (!channel) {

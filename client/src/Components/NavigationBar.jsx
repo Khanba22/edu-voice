@@ -11,13 +11,17 @@ const NavigationBar = () => {
   return (
     <div className="w-screen overflow-x-clip flex items-center bg-black fixed z-50 top-0 h-16 text-white">
       <div className="w-full h-full justify-between relative p-5 hidden lg:flex">
-        <div className="flex items-center w-2/6">Logo and Company Name</div>
+        <div className="flex items-center w-2/6">EDU VOICE</div>
         <div className="flex items-center w-2/6 justify-evenly">
+          <Link to="/">
+            <button className="hover:underline hover:scale-105">Home</button>
+          </Link>
           <Link to="/channel">
             <button className="hover:underline hover:scale-105">Channel</button>
           </Link>
-          <button className="hover:underline">Link 2</button>
-          <button className="hover:underline">Link 3</button>
+          <Link to="/about-us">
+            <button className="hover:underline hover:scale-105">About Us</button>
+          </Link>
           <button
             className="hover:underline"
             onClick={() => {

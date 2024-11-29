@@ -41,11 +41,11 @@ const ChannelDetails = () => {
   };
 
   return (
-    <div className="h-full w-2/12 bg-blue-700">
+    <div className="h-full w-2/12 bg-neutral-800 border-x-2 border-y-2 border-neutral-700 overflow-y-scroll noScrollbar">
       {selectedChannel && (
         <>
-          <h1>{selectedChannel.channelName}</h1>
-          <div className="w-full h-12 bg-red-50">
+          <h1 className=" text-lg font-bold text-white text-center py-2">{selectedChannel.channelName}</h1>
+          <div className="w-full h-12 bg-red-50 py-4 my-3">
             <div className="h-full w-full flex items-center justify-center rounded-lg relative cursor-pointer hover:border-gray-400">
               <input
                 onChange={handleFile}

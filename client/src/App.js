@@ -5,6 +5,7 @@ import UserDashboard from "./Pages/UserDashboard";
 import ChannelPage from "./Pages/ChannelPage";
 import NavigationBar from "./Components/NavigationBar";
 import CreateUser from "./Components/CreateUser";
+// import AboutUsPage from "./Pages/AboutUsPage";
 
 export default function App() {
 
@@ -15,7 +16,7 @@ export default function App() {
         <Route element={<HomePage />} path="/" />
         <Route element={<AuthenticationPage />} path="/auth" />
         <Route element={<CreateUser />} path="/auth/create-user" />
-        <Route element={<UserDashboard />} path="/dashboard" />
+        {/* <Route element={<AboutUsPage />} path="/about-us" /> */}
         <Route element={<ChannelPage />} path="/channel" />
       </Routes>
     </>

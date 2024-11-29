@@ -10,7 +10,9 @@ const ChannelList = ({
   const [selectedIndex, setSelected] = useState(0);
 
   return (
-    <div className="w-12 h-full z-30">
+    <div
+      className="w-12 h-full border-neutral-700 z-30"
+    >
       <div
         className={`relative transition w-80 h-full ${expand ? "" : "w-80"}`}
         style={expand ? { transform: "translateX(-17rem)" } : {}}
@@ -38,7 +40,6 @@ const ChannelList = ({
                 } flex aspect-square justify-center items-center h-10 rounded-full`}
               >
                 {channel.channelName[0]}
-                {/* Logo */}
               </div>
               <div
                 className={`${expand && "hidden"} h-full mx-3 w-full ${
@@ -49,7 +50,7 @@ const ChannelList = ({
                   <p className="text-m p-0 m-0">{channel.channelName}</p>
                   <span>12-12AM</span>
                 </div>
-                <p className=" text-s ">Last Chat said blah blah blah</p>
+                <p className=" text-s ">Hello</p>
               </div>
             </div>
           ))}
@@ -58,7 +59,7 @@ const ChannelList = ({
           onClick={() => {
             setExpand(!expand);
           }}
-          className="absolute -right-4 top-0 bottom-0 w-4 h-10 m-auto bg-blue-800"
+          className="absolute -right-4 top-0 bottom-0 w-4 h-10 m-auto bg-slate-900 text-white rounded-r-lg"
         >
           B
         </button>
