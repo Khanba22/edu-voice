@@ -23,7 +23,8 @@ const generateTranscripts = async (topics) => {
 
 const createTopics = async (data) => {
   const noteIds = []; // Array to store created note IDs
-
+  console.log("Creating Topics")
+  console.log(data);
   for (let index = 0; index < data.length; index++) {
     const element = data[index]; // Access each element in the data array
     // Create a new topic object from the element
@@ -79,7 +80,7 @@ router.post(
           },
         }
       );
-
+      console.log(llmResponse.data);
       // Clean up the temporary uploaded file
       fs.unlinkSync(filePath);
 
@@ -124,7 +125,7 @@ router.post(
 
         return res.status(200).json(updatedChannel);
       }
-
+      console.log("Error forwarding to LLM server:", llmResponse.data);
       return res.status(llmResponse.status).json(llmResponse.data);
     } catch (error) {
       console.error("Error forwarding to LLM server:", error);

@@ -27,9 +27,9 @@ const ChannelSideBar = () => {
         onClick={() => {
           setExtend(!extend);
         }}
-        className="absolute bottom-12 right-12 bg-neutral-800 h-14 w-14 rounded-full "
+        className="absolute bottom-14 right-14 bg-neutral-800 text-white border border-white h-8 w-8 rounded-full "
       >
-        P
+        i
       </button>
     </div>
   );

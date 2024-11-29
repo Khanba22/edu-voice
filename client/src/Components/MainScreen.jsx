@@ -9,7 +9,7 @@ const MainScreen = () => {
   return (
     <div className="h-full w-9/12 flex flex-col justify-between">
       {/* Main display area */}
-      <div className="bg-neutral-800 text-white h-5/6 p-4">
+      <div className="bg-neutral-800 text-white h-5/6 p-4 overflow-y-scroll">
         <div>
           <h2 className="text-xl font-bold">{currentTopic && "Tables"}</h2>
           <div className="w-full flex">

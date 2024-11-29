@@ -66,7 +66,16 @@ router.post("/get-members", async (req, res) => {
       return res.status(404).json({ message: "Channel not found" });
     }
 
-    res.status(200).json({ members: channel.members });
+    const data = channel.members.map((member) => {
+      if (channel.admins.includes(member._id)) {
+        return { ...member._doc, isAdmin: true };
+      }
+      return { ...member._doc, isAdmin: false };
+    })
+
+    console.log(data);
+
+      res.status(200).json({ members: data });
   } catch (error) {
     res.status(500).json({ message: "Error retrieving members", error });
   }
@@ -122,9 +131,10 @@ router.get("/search-chats", async (req, res) => {
 // Add a member to a channel (Admin only)
 router.post("/add-member", async (req, res) => {
   try {
-    const { channelId, userId, newMemberId } = req.body;
+    const { channelId, userId, newMemberEmail } = req.body;
 
     const channel = await Channel.findById(channelId);
+    console.log(channel);
     if (!channel) {
       return res.status(404).json({ message: "Channel not found" });
     }
@@ -133,18 +143,18 @@ router.post("/add-member", async (req, res) => {
       return res.status(403).json({ message: "Only admins can add members" });
     }
 
-    const newMember = await User.findById(newMemberId);
+    const newMember = await User.findOne({ email: newMemberEmail });
     if (!newMember) {
       return res.status(404).json({ message: "New member not found" });
     }
 
-    if (channel.members.includes(newMemberId)) {
+    if (channel.members.includes(newMember._id)) {
       return res
         .status(400)
         .json({ message: "User is already a member of this channel" });
     }
 
-    channel.members.push(newMemberId);
+    channel.members.push(newMember._id);
     await channel.save();
 
     newMember.channels.push(channelId);
@@ -152,6 +162,7 @@ router.post("/add-member", async (req, res) => {
 
     res.status(200).json({ message: "Member added to channel successfully" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Error adding member to channel", error });
   }
 });

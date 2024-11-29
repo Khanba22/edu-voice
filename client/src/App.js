@@ -16,7 +16,6 @@ export default function App() {
         <Route element={<HomePage />} path="/" />
         <Route element={<AuthenticationPage />} path="/auth" />
         <Route element={<CreateUser />} path="/auth/create-user" />
-        {/* <Route element={<AboutUsPage />} path="/about-us" /> */}
         <Route element={<ChannelPage />} path="/channel" />
       </Routes>
     </>

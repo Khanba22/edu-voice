@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { UserContext } from "../Contexts/UserContext";
 import { ChannelContext } from "../Contexts/ChannelContext";
 import TopicMapper from "./TopicMapper";
@@ -32,8 +32,7 @@ const ChannelDetails = () => {
         e.target.value = null; // Reset the input field
         getChannels()
       } else {
-        const errorData = await response.json();
-        console.log(`Error: ${errorData.message}`);
+        alert("Error uploading document: Reduce the size of data and try again");
       }
     } catch (error) {
       console.error("Error uploading document:", error);

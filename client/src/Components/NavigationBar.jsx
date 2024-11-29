@@ -19,16 +19,13 @@ const NavigationBar = () => {
           <Link to="/channel">
             <button className="hover:underline hover:scale-105">Channel</button>
           </Link>
-          <Link to="/about-us">
-            <button className="hover:underline hover:scale-105">About Us</button>
-          </Link>
           <button
             className="hover:underline"
             onClick={() => {
               setHideExtra(!hideExtra);
             }}
           >
-            Extender
+            Login/Logout
           </button>
         </div>
         <div

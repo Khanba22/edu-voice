@@ -11,7 +11,7 @@ def extractTopic(text):
         messages=[
             {
                 "role": "system",
-                "content": "When a large text is provided, identify the main topic and its relevant subtopics. Present the output in this exact JSON format:\\n\\njson\\nCopy code\\n{\\n   \\\"main_topic\\\": \\\"Main Topic\\\",\\n   \\\"subtopics\\\": [\\n      \\\"Subtopic 1\\\",\\n         \\\"Subtopic 2\\\",\\n         \\\"Subtopic 3\\\",\\n      ...\\n   ]\\n}\\nEnsure all subtopics are framed in context with the main topic, and listed within a single JSON array under the \\\"subtopics\\\" field."
+                "content": "When a large text is provided, identify the main topic and its relevant subtopics. Present the output in this exact JSON format:\\n\\njson\\nCopy code\\n{\\n   \\\"main_topic\\\": \\\"Main Topic\\\",\\n   \\\"subtopics\\\": [\\n      \\\"Subtopic 1\\\",\\n         \\\"Subtopic 2\\\",\\n         \\\"Subtopic 3\\\",\\n      ...\\n   ]\\n}\\nEnsure all subtopics are framed in context with the main topic, and listed within a single JSON array under the \\\"subtopics\\\" field. Also make sure to not provide any formatting characters like * unless required"
             },
             {
                 "role": "user",

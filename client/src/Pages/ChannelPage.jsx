@@ -3,19 +3,16 @@ import ChannelList from "../Components/ChannelList";
 import MainScreen from "../Components/MainScreen";
 import ChannelHeader from "../Components/ChannelHeader";
 import ChannelSideBar from "../Components/ChannelSideBar";
-import { SocketContext, SocketProvider } from "../Contexts/SocketContext";
+import { SocketProvider } from "../Contexts/SocketContext";
 import { AuthContext } from "../Contexts/AuthContext";
-import { UserContext } from "../Contexts/UserContext";
 import { ChannelContext } from "../Contexts/ChannelContext";
 import AddChannelPopup from "../Components/AddChannelPopup";
 import ChannelDetails from "../Components/ChannelDetails";
 
 const ChannelPage = () => {
-  const { userDetails } = useContext(UserContext);
   const { isAuthenticated } = useContext(AuthContext);
-  const { channels, setSelectedChannel, selectedChannel, setChannels , getChannels } =
+  const { channels, setSelectedChannel, selectedChannel, getChannels } =
     useContext(ChannelContext);
-  const { ws, handleUserJoin, receiveMessage } = useContext(SocketContext);
   const [showPopUp, setShowPopUp] = useState(false);
   const [selectedPopUpWindow, setSelectedPopUpWindow] = useState("addChannel");
   const popUpWindows = {
@@ -30,6 +27,7 @@ const ChannelPage = () => {
 
   useEffect(() => {
     getChannels();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
   return (
     <SocketProvider>
